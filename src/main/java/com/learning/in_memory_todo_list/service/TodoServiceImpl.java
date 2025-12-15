@@ -1,43 +1,44 @@
 package com.learning.in_memory_todo_list.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.learning.in_memory_todo_list.Models.TodoItem;
+import com.learning.in_memory_todo_list.repository.TodoRepository;
 
 @Service
 public class TodoServiceImpl implements TodoService {
 
-    private List<TodoItem> todoList = new ArrayList<>();
+    @Autowired
+    private TodoRepository todoRepository;
 
     @Override
-    public TodoItem createTodo(TodoItem todoItem) {
-        todoList.add(todoItem);
-        return null;
+    public void createTodo(TodoItem todoItem) {
+        todoRepository.save(todoItem);
     }
 
     @Override
     public void deleteTodo(Long id) {
-        TodoItem matchedTodoItem =  todoList.stream()
+        TodoItem matchedTodoItem =  todoRepository.findAll().stream()
             .filter(item -> item.getId() == id)
             .findFirst()
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Todo with id " + id + " not present"));
         
-        todoList.remove(matchedTodoItem);
+        todoRepository.delete(matchedTodoItem);
     }
 
     @Override
     public List<TodoItem> getAllTodos() {
-        return todoList;
+        return todoRepository.findAll();
     }
 
     @Override
     public TodoItem getTodoById(Long id) {
-        TodoItem matchedTodoItem =  todoList.stream()
+        TodoItem matchedTodoItem =  todoRepository.findAll().stream()
             .filter(item -> item.getId() == id)
             .findFirst()
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Todo with id " + id + " not present"));
@@ -46,7 +47,7 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public TodoItem updateTodo(Long id, TodoItem todoItem) {
-        TodoItem matchedTodoItem =  todoList.stream()
+        TodoItem matchedTodoItem =  todoRepository.findAll().stream()
             .filter(item -> item.getId() == id)
             .findFirst()
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Todo with id " + id + " not present"));
