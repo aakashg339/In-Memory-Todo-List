@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.learning.in_memory_todo_list.Models.TodoItem;
+import com.learning.in_memory_todo_list.exceptions.ResourceNotFoundException;
 import com.learning.in_memory_todo_list.repository.TodoRepository;
 
 @Service
@@ -23,10 +24,8 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public void deleteTodo(Long id) {
-        TodoItem matchedTodoItem =  todoRepository.findAll().stream()
-            .filter(item -> item.getId() == id)
-            .findFirst()
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Todo with id " + id + " not present"));
+        TodoItem matchedTodoItem = todoRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Todo with id " + id + " not present"));
         
         todoRepository.delete(matchedTodoItem);
     }
@@ -38,19 +37,15 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public TodoItem getTodoById(Long id) {
-        TodoItem matchedTodoItem =  todoRepository.findAll().stream()
-            .filter(item -> item.getId() == id)
-            .findFirst()
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Todo with id " + id + " not present"));
+        TodoItem matchedTodoItem = todoRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Todo with id " + id + " not present"));
         return matchedTodoItem;
     }
 
     @Override
     public TodoItem updateTodo(Long id, TodoItem todoItem) {
-        TodoItem matchedTodoItem =  todoRepository.findAll().stream()
-            .filter(item -> item.getId() == id)
-            .findFirst()
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Todo with id " + id + " not present"));
+        TodoItem matchedTodoItem = todoRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Todo with id " + id + " not present"));
 
         matchedTodoItem.setTitle(todoItem.getTitle());
         matchedTodoItem.setCompleted(todoItem.getCompleted());

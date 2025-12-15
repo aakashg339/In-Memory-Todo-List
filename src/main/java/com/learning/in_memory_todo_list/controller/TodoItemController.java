@@ -38,12 +38,8 @@ public class TodoItemController {
 
     @GetMapping("todos/{id}")
     public ResponseEntity<Optional<TodoItem>> getTodo(@PathVariable Long id) {
-        try {
-            TodoItem todoItem = todoService.getTodoById(id);
-            return new ResponseEntity<>(Optional.of(todoItem), HttpStatus.OK);
-        } catch (ResponseStatusException e) {
-            return new ResponseEntity<>(Optional.empty(), e.getStatusCode());
-        }
+        TodoItem todoItem = todoService.getTodoById(id);
+        return new ResponseEntity<>(Optional.of(todoItem), HttpStatus.OK);
     }
 
     @GetMapping("todos")
@@ -53,21 +49,13 @@ public class TodoItemController {
     
     @PutMapping("todos/{id}")
     public ResponseEntity<String> updateTodo(@PathVariable Long id, @Valid @RequestBody TodoItem todoItem) {
-        try {
-            todoService.updateTodo(id, todoItem);
-            return new ResponseEntity<>("Todo item updated", HttpStatus.OK);
-        } catch (ResponseStatusException e) {
-            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
-        }
+        todoService.updateTodo(id, todoItem);
+        return new ResponseEntity<>("Todo item updated", HttpStatus.OK);
     }
 
     @DeleteMapping("todos/{id}")
     public ResponseEntity<String> deleteTodo(@PathVariable Long id) {
-        try {
-            todoService.deleteTodo(id);
-            return new ResponseEntity<>("Todo deleted Successfully", HttpStatus.OK);
-        } catch (ResponseStatusException e) {
-            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
-        }
+        todoService.deleteTodo(id);
+        return new ResponseEntity<>("Todo deleted Successfully", HttpStatus.OK);
     }
 }
